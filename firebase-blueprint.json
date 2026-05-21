@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the CRM system (accountant or admin).",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "accountant"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "name", "role", "createdAt"]
+    },
+    "Client": {
+      "title": "Client",
+      "description": "A client managed by the accounting firm.",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string" },
+        "businessNipt": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "emailPassword": { "type": "string" },
+        "password": { "type": "string" },
+        "phone": { "type": "string" },
+        "eAlbaniaPersonal": { "type": "string" },
+        "eAlbaniaPersonalPassword": { "type": "string" },
+        "eAlbaniaBusiness": { "type": "string" },
+        "eAlbaniaBusinessPassword": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "propertyStatus": { "type": "string" },
+        "paymentTax1": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string", "description": "UID of the user who created this client" }
+      },
+      "required": ["businessName", "ownerName", "status", "createdAt", "createdBy"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "An invoice billed to a client.",
+      "type": "object",
+      "properties": {
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "sent", "paid", "overdue"] },
+        "issueDate": { "type": "string", "format": "date-time" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            },
+            "required": ["description", "quantity", "price"]
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["clientId", "clientName", "amount", "status", "issueDate", "dueDate", "items", "createdAt", "createdBy"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A business expense logged in the CRM.",
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "category": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "receiptUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["description", "amount", "category", "date", "createdAt", "createdBy"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles."
+    },
+    "clients/{clientId}": {
+      "schema": { "$ref": "#/entities/Client" },
+      "description": "Stores client records."
+    },
+    "invoices/{invoiceId}": {
+      "schema": { "$ref": "#/entities/Invoice" },
+      "description": "Stores invoices."
+    },
+    "expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Stores expenses."
+    }
+  }
+}
